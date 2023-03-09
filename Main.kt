@@ -59,28 +59,36 @@ fun movePawn(chessBoard: Array<Array<String>>, inputMove: String, player: String
     val row2 = inputMove[3].digitToInt() - 1
     val col2 = inputMove[2].code - 97
 
-    val step = if (player == player1) 1 else -1
-    val pawnColor = if (player == player1) " W " else " B "
-    val startingRow = if (player == player1) 1 else 6
-
-    var isValid = false
-
-    if (chessBoard[row1][col1] != pawnColor) {
-        println("No ${if (player == player1) "white" else "black"} pawn at ${inputMove.subSequence(0, 2)}")
-    } else if (
-        (col1 != col2)
-        || (row1 == 1 && (row2 - row1 > 2 || row2 - row1 <= 0))
-        || (row1 == 6 && (row1 - row2 > 2 || row1 - row2 <= 0))
-        || chessBoard[row1 + step][col1] != "   "
-        || (row1 != startingRow && row2 - row1 != step)
-        || (chessBoard[row2][col2] != "   ")
-    ) {
-        println("Invalid Input")
+    if(player == player1) {
+        if (chessBoard[row1][col1] != " W ") {
+            println("No white pawn at ${inputMove.subSequence(0, 2)}")
+            return false
+        }
+        if (
+            (row1 == 1 && row2 == 3 && col1 == col2 && chessBoard[row1 + 1][col2] == "   " && chessBoard[row2][col2] == "   ")
+            || (row2 - row1 == 1 && col1 == col2 && chessBoard[row2][col2] == "   ")
+        ) {
+            chessBoard[row1][col1] = "   "
+            chessBoard[row2][col2] = " W "
+            printChessBoard(chessBoard)
+            return true
+        }
     } else {
-        chessBoard[row1][col1] = "   "
-        chessBoard[row2][col2] = pawnColor
-        printChessBoard(chessBoard)
-        isValid = true
+        if (chessBoard[row1][col1] != " B ") {
+            println("No black pawn at ${inputMove.subSequence(0, 2)}")
+            return false
+        }
+        if (
+            (row1 == 6 && row2 == 4 && col1 == col2 && chessBoard[row1 - 1][col2] == "   " && chessBoard[row2][col2] == "   ")
+            || (row1 - row2 == 1 && col1 == col2 && chessBoard[row2][col2] == "   ")
+        ) {
+            chessBoard[row1][col1] = "   "
+            chessBoard[row2][col2] = " B "
+            printChessBoard(chessBoard)
+            return true
+        }
     }
-    return isValid
+
+    println("Invalid Input")
+    return false
 }
