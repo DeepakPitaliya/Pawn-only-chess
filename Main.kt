@@ -13,6 +13,7 @@ fun main() {
 
 var player1 = ""
 var player2 = ""
+val moveList = mutableListOf<MutableList<Int>>()
 fun createInitialBoard(): Array<Array<String>> {
     val chessBoard = Array(8) { Array(8) { "   " } }
     for (i in 0..7) {
@@ -50,6 +51,8 @@ fun play(chessBoard: Array<Array<String>>) {
             if (movePawn(chessBoard, inputMove, player)) {
                 player = if (player == player1) player2 else player1
             }
+        } else {
+            println("Invalid Input")
         }
     }
 }
@@ -58,8 +61,9 @@ fun movePawn(chessBoard: Array<Array<String>>, inputMove: String, player: String
     val col1 = inputMove[0].code - 97
     val row2 = inputMove[3].digitToInt() - 1
     val col2 = inputMove[2].code - 97
+    val move = mutableListOf(row1, col1, row2, col2)
 
-    if(player == player1) {
+    if (player == player1) {
         if (chessBoard[row1][col1] != " W ") {
             println("No white pawn at ${inputMove.subSequence(0, 2)}")
             return false
@@ -67,10 +71,20 @@ fun movePawn(chessBoard: Array<Array<String>>, inputMove: String, player: String
         if (
             (row1 == 1 && row2 == 3 && col1 == col2 && chessBoard[row1 + 1][col2] == "   " && chessBoard[row2][col2] == "   ")
             || (row2 - row1 == 1 && col1 == col2 && chessBoard[row2][col2] == "   ")
+            || (row2 - row1 == 1 && Math.abs(col2 - col1) == 1 && chessBoard[row2][col2] == " B ")
         ) {
             chessBoard[row1][col1] = "   "
             chessBoard[row2][col2] = " W "
             printChessBoard(chessBoard)
+            moveList.add(move)
+            return true
+        }
+        if (row1 == 4 && row2 == 5 && Math.abs(col2 - col1) == 1 && chessBoard[row1][col2] == " B " && moveList.last()[0] == 6 && moveList.last()[2] == 4) {
+            chessBoard[row1][col1] = "   "
+            chessBoard[row2][col2] = " W "
+            chessBoard[row1][col2] = "   "
+            printChessBoard(chessBoard)
+            moveList.add(move)
             return true
         }
     } else {
@@ -81,10 +95,20 @@ fun movePawn(chessBoard: Array<Array<String>>, inputMove: String, player: String
         if (
             (row1 == 6 && row2 == 4 && col1 == col2 && chessBoard[row1 - 1][col2] == "   " && chessBoard[row2][col2] == "   ")
             || (row1 - row2 == 1 && col1 == col2 && chessBoard[row2][col2] == "   ")
+            || (row1 - row2 == 1 && Math.abs(col2 - col1) == 1 && chessBoard[row2][col2] == " W ")
         ) {
             chessBoard[row1][col1] = "   "
             chessBoard[row2][col2] = " B "
             printChessBoard(chessBoard)
+            moveList.add(move)
+            return true
+        }
+        if (row1 == 3 && row2 == 2 && Math.abs(col2 - col1) == 1 && chessBoard[row1][col2] == " W " && moveList.last()[0] == 1  && moveList.last()[2] == 3) {
+            chessBoard[row1][col1] = "   "
+            chessBoard[row2][col2] = " B "
+            chessBoard[row1][col2] = "   "
+            printChessBoard(chessBoard)
+            moveList.add(move)
             return true
         }
     }
